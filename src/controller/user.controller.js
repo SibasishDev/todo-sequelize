@@ -1,6 +1,6 @@
 const { response } = require("express");
 const db = require("../config/db.connection");
-const { User } = db;
+const { User } = db.models;
 const UserValidation = require("../validation/user.validation");
 
 class UserController {
@@ -18,6 +18,7 @@ class UserController {
         where: { email: value.email },
         include: [{ model: UserMeta, as: "userMeta" }],
       });
+
     } catch (e) {
       return res.status(400).json({ code: 400, message: e.message });
     }
@@ -27,20 +28,35 @@ class UserController {
     try {
       let { limit, page } = req.query;
 
-      limit = limit || 10;
+      console.log(req.query);
 
-      page = page || 1;
+      limit = +limit || 10;
+
+      page = +page || 1;
 
       const skip = (limit - 1) * page;
 
-      const users = await User.findAll({ limit, offset: skip });
+      console.log(skip);
+
+      const users = await User.findAll({limit, offset : page});
 
       if (!users.length)
         return res
           .status(200)
           .json({ code: 404, message: "Users not found!", data: [] });
+
+          return res.status(200).json({
+            code : 200,
+            message : "User results fetch successfully",
+            data : users
+          })
+
+          
     } catch (e) {
+      console.log(e)
       return res.status(400).json({ code: 400, message: e.message });
     }
   };
 }
+
+module.exports = new UserController();

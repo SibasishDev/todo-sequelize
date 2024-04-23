@@ -1,9 +1,9 @@
 const Sequelize = require("sequelize");
-
+const initModel = require("../modal/init.modal");
 const sequelize = new Sequelize(process.env.DB, process.env.DB_USERNAME,
     process.env.PASSWORD,{
         host : process.env.HOST,
-        dialect : process.env.DIALECT,
+        dialect : process.env.DB_DIALECT,
         pool : {
             max : 10,
             min : 5,
@@ -26,10 +26,9 @@ const sequelize = new Sequelize(process.env.DB, process.env.DB_USERNAME,
     db.Sequelize = Sequelize;
     db.sequelize = sequelize;
 
-    db.sequelize.sync({ force: false })
-    .then(() => console.log("re-sync done."));
+   
 
-    db.models = initModel.initModels(sequelize, Sequelize);
+    db.models = initModel(sequelize, Sequelize);
 
 
     module.exports = db;

@@ -1,4 +1,6 @@
 const Router = require("express");
+const userController = require("../controller/user.controller");
+const {authenticateAccessToken} = require("../middleware/auth.middleware")
 
 class ApiRouter {
     constructor () {
@@ -7,7 +9,8 @@ class ApiRouter {
     }
 
     init(){
-        // this.router.post("/create-post", );
+        // this.router.use(authenticateAccessToken);
+        this.router.get("/get-user", userController.findAllUser);
     }
 
     getRouters(){

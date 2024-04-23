@@ -4,6 +4,7 @@ const cors = require("cors");
 require("dotenv").config();
 console.log(process.env.PORT);
 const Router = require("./routes/api.router");
+const DB = require("./config/db.connection");
 class App {
   constructor() {
     this.app = express();
@@ -13,6 +14,7 @@ class App {
   init() {
     this.addMiddlewareRoutes(this.app);
     this.listenToPort(this.app, this.port);
+    this.connectToDB();
   }
 
   addMiddlewareRoutes(app) {
@@ -30,12 +32,16 @@ class App {
 
     app.use(helmet());
 
-    app.use("api/v1/", new Router().getRouters());
+    // app.use("/api/v1", (req, res) => {
+    //   res.send("Hello from server");
+    // })
+
+    app.use("/api/v1", new Router().getRouters());
 
     app.use("*", (req, res) => {
         return res.status(404).json({
             code : 404,
-            message : "Nott found"
+            message : "Not found!"
         })
     })
 
@@ -45,6 +51,11 @@ class App {
             message : err.message || "Internal server error"
         })
     })
+  }
+
+  connectToDB(){
+    DB.sequelize.sync({ force: false })
+    .then(() => console.log("re-sync done."));
   }
 
   listenToPort(app, port){

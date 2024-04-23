@@ -19,8 +19,12 @@ module.exports = function (sequelize, Sequelize) {
         //     is: /^[0-9a-f]{64}$/i
         //   }
       },
-      role_id: {
-        type: Sequelize.INTEGER,
+      first_name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      last_name: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
       created_at: {
